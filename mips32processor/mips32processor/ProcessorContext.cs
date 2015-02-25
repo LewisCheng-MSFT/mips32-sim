@@ -7,7 +7,7 @@ namespace mips32processor
 {
     public class ProcessorContext
     {
-        private long m_currentCycle = -1;
+        private long m_currentCycle = 0;
         private IDictionary<string, uint> m_registers;
         private IDictionary<string, uint> m_nextNodeStates;
         private IDictionary<string, uint> m_currentNodeStates;
@@ -22,8 +22,9 @@ namespace mips32processor
 
         public bool IsHalted;
 
-        public uint[] InstMemory;
-        public uint[] DataMemory;
+        public Memory InstMemory;
+        public Memory DataMemory;
+        public Cache DataCache;
 
         public ProcessorContext()
         {
@@ -31,15 +32,7 @@ namespace mips32processor
             m_currentNodeStates = new Dictionary<string, uint>();
             m_registers = new Dictionary<string, uint>();
 
-            InstMemory = new uint[] {
-                0x2001000A,
-                0x00411020,
-                0x2021FFFF,
-                0x1420FFFD,
-                0xFFFFFFFF
-            };
-            
-            /*InstMemory = new uint[] {
+            InstMemory = new Memory(new uint[] {
                 0x20020005,
                 0x2003000C,
                 0x2067FFF7,
@@ -67,10 +60,12 @@ namespace mips32processor
                 0x20020001,
                 0xAC020054,
                 0xFFFFFFFF
-            };*/
+            });
 
-            // 4KB
-            DataMemory = new uint[1024];
+            // 4KB Data Memory.
+            DataMemory = new Memory(1024);
+
+            DataCache = new Cache(DataMemory);
         }
 
         public uint GetRegister(string name)

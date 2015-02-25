@@ -255,7 +255,7 @@ namespace mips32processor.Mips32
             if (m_isBranchTaken)
                 m_context.SetNodeState("if:pc", m_bpc);
 
-            Hazard();
+            HandleHazard();
 
             m_context.SetNodeState("exe:q1", m_q1);
             m_context.SetNodeState("exe:q2", m_q2);
@@ -269,7 +269,7 @@ namespace mips32processor.Mips32
             m_context.SetNodeState("exe:regdst", m_regdst);
         }
 
-        private void Hazard()
+        private void HandleHazard()
         {
             if (m_exeStall == 0 && m_exeWreg == 1)
             { // Hazard with instruction in EXE.
@@ -311,7 +311,8 @@ namespace mips32processor.Mips32
                 {
                     Console.WriteLine("ID: Hazard with inst in MEM");
                     m_context.SetRegister("q1", 2);
-                    if (m_isBranch)
+                    // lw will produce result by the end of next cycle.
+                    if (m_isBranch || m_op == 35)
                     {
                         m_context.PassNodeState("id:pc");
                         m_context.PassNodeState("id:ir");

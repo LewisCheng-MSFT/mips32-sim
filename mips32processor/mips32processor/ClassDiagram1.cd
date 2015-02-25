@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="mips32processor.Cache" Collapsed="true">
+    <Position X="2.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>aAAAEEAEEAAAAgAACIAAABAAIABAAAAEAAAAAEBAAIg=</HashCode>
+      <FileName>Cache.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Memory" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Memory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.ProcessorContext" Collapsed="true">
+    <Position X="1.5" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAJQAAADAAAAAAAAEAAFABQAgAAAAgAAAAAAAAAI=</HashCode>
+      <FileName>ProcessorContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Program" Collapsed="true">
+    <Position X="5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Stage" Collapsed="true">
+    <Position X="3.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAQEAQAAAAABAAAgAAAAIAIAAAAAAAEAAAA=</HashCode>
+      <FileName>Stage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.3" Collapsed="true" />
+  </Class>
+  <Class Name="mips32processor.Directors.IterativeDirector" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Directors\IterativeDirector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.197" Collapsed="true" />
+  </Class>
+  <Class Name="mips32processor.Directors.TimerDirector" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAACAEAAAAAAAAAAAAAACIAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Directors\TimerDirector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.237" Collapsed="true" />
+  </Class>
+  <Class Name="mips32processor.Mips32.AluControl" Collapsed="true">
+    <Position X="5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAAIAAAAAAAAAAAACAAACAAAAAAAABAAIAAAAA=</HashCode>
+      <FileName>Mips32\AluControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Mips32.EXE" Collapsed="true">
+    <Position X="5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAgUAAQgAMAABAAAgCAAQICAAAAAAAAEAAAA=</HashCode>
+      <FileName>Mips32\EXE.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Mips32.ID" Collapsed="true">
+    <Position X="7.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABEAkAgCAgQACQgSMgABAAGgCEJcICwQJAggAAEAAQA=</HashCode>
+      <FileName>Mips32\ID.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Mips32.IF" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAQAAAAABAAAgAAAQIAgAAAAAAAEAAAA=</HashCode>
+      <FileName>Mips32\IF.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Mips32.MEM" Collapsed="true">
+    <Position X="2.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAUAAQACEAABAAAgAAAQIAAAIAAAAAEAAAA=</HashCode>
+      <FileName>Mips32\MEM.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mips32processor.Mips32.Processor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQCAAAAAAAAAAQAAAAAAAAAAAAAAABcAAAAgAAAAAAA=</HashCode>
+      <FileName>Mips32\Processor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" Collapsed="true" />
+  </Class>
+  <Class Name="mips32processor.Mips32.WB" Collapsed="true">
+    <Position X="9.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAUACQACAgABAAAgAAAQIAAAIAgAAAEAAAA=</HashCode>
+      <FileName>Mips32\WB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="mips32processor.IProcessorComponent" Collapsed="true">
+    <Position X="4.75" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAQAAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>IProcessorComponent.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="mips32processor.Directors.IDirector" Collapsed="true">
+    <Position X="8.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Directors\IDirector.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>

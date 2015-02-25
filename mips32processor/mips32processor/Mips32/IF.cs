@@ -38,7 +38,7 @@ namespace mips32processor.Mips32
 
             try
             {
-                m_ir = m_context.InstMemory[m_pc >> 2];
+                m_ir = m_context.InstMemory[m_pc];
                 return true;
             }
             catch (IndexOutOfRangeException)

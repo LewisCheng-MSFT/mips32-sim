@@ -75,14 +75,14 @@ namespace mips32processor.Mips32
             m_memout = 0;
             try
             {
-                uint index = m_aluout >> 2;
                 if (m_wmem == 0)
-                    m_memout = m_context.DataMemory[index];
+                    m_memout = m_context.DataCache[m_aluout];
                 else
-                    m_context.DataMemory[index] = m_q2;
+                    m_context.DataCache[m_aluout] = m_q2;
             }
             catch (IndexOutOfRangeException)
             {
+                Console.WriteLine("MEM: Warning: address is invalid");
             }
 
             Console.WriteLine("MEM: inst=0x{0:x}, alu_out(address)=0x{1:x}, mem_read=0x{2:x}, mem_write=0x{3:x}", m_ir, m_aluout, m_memout, m_q2);
