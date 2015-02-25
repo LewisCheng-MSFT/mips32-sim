@@ -7,8 +7,8 @@ namespace mips32processor
 {
     public interface IProcessorComponent
     {
-        IList<IProcessorComponent> SubComponents { get; set; }
+        ICollection<IProcessorComponent> SubComponents { get; set; }
         void Initialize(ProcessorContext context);
-        void Pulse(ProcessorContext context);
+        void Pulse();
     }
 }

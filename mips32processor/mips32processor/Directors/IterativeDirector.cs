@@ -16,9 +16,8 @@ namespace mips32processor.Directors
             {
                 context.IncrementCycle();
                 Console.WriteLine("-------------------- Cycle {0} --------------------", context.CurrentCycle);
-                component.Pulse(context);
+                component.Pulse();
                 Console.WriteLine("-------------------- End Cycle --------------------\n");
-                //Console.ReadLine();
             }
         }
     }

@@ -7,39 +7,43 @@ namespace mips32processor.Mips32
 {
     class Processor : IProcessorComponent
     {
-        private IFComponent m_ifc;
-        private IDComponent m_idc;
-        private EXEComponent m_exec;
-        private MEMComponent m_memc;
-        private WBComponent m_wbc;
+        public ICollection<IProcessorComponent> SubComponents { get; set; }
 
-        public IList<IProcessorComponent> SubComponents { get; set; }
-
-        public Processor()
-        {
-            m_ifc = new IFComponent();
-            m_idc = new IDComponent();
-            m_exec = new EXEComponent();
-            m_memc = new MEMComponent();
-            m_wbc = new WBComponent();
-        }
+        private IF m_if;
+        private ID m_id;
+        private EXE m_exe;
+        private MEM m_mem;
+        private WB m_wb;
 
         public void Initialize(ProcessorContext context)
         {
-            m_ifc.Initialize(context);
-            m_idc.Initialize(context);
-            m_exec.Initialize(context);
-            m_memc.Initialize(context);
-            m_wbc.Initialize(context);
+            SubComponents = new List<IProcessorComponent>();
+
+            m_if = new IF();
+            m_if.Initialize(context);
+            SubComponents.Add(m_if);
+
+            m_id = new ID();
+            m_id.Initialize(context);
+            SubComponents.Add(m_id);
+
+            m_exe = new EXE();
+            m_exe.Initialize(context);
+            SubComponents.Add(m_exe);
+
+            m_mem = new MEM();
+            m_mem.Initialize(context);
+            SubComponents.Add(m_mem);
+
+            m_wb = new WB();
+            m_wb.Initialize(context);
+            SubComponents.Add(m_wb);
         }
 
-        public void Pulse(ProcessorContext context)
+        public void Pulse()
         {
-            m_ifc.Pulse(context);
-            m_idc.Pulse(context);
-            m_exec.Pulse(context);
-            m_memc.Pulse(context);
-            m_wbc.Pulse(context);
+            foreach (Stage c in SubComponents)
+                c.Pulse();
         }
     }
 }

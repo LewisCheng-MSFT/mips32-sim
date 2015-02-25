@@ -47,15 +47,16 @@
   <ItemGroup>
     <Compile Include="Directors\TimerDirector.cs" />
     <Compile Include="Directors\IDirector.cs" />
+    <Compile Include="IProcessorComponent.cs" />
     <Compile Include="Mips32\AluControl.cs" />
     <Compile Include="ProcessorContext.cs" />
-    <Compile Include="IProcessorComponent.cs" />
-    <Compile Include="Mips32\EXEComponent.cs" />
-    <Compile Include="Mips32\IDComponent.cs" />
-    <Compile Include="Mips32\IFComponent.cs" />
-    <Compile Include="Mips32\MEMComponent.cs" />
+    <Compile Include="Stage.cs" />
+    <Compile Include="Mips32\EXE.cs" />
+    <Compile Include="Mips32\ID.cs" />
+    <Compile Include="Mips32\IF.cs" />
+    <Compile Include="Mips32\MEM.cs" />
     <Compile Include="Mips32\Processor.cs" />
-    <Compile Include="Mips32\WBComponent.cs" />
+    <Compile Include="Mips32\WB.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Directors\IterativeDirector.cs" />

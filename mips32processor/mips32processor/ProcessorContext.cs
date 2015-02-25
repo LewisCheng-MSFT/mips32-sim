@@ -31,15 +31,15 @@ namespace mips32processor
             m_currentNodeStates = new Dictionary<string, uint>();
             m_registers = new Dictionary<string, uint>();
 
-            /*InstMemory = new uint[] {
+            InstMemory = new uint[] {
                 0x2001000A,
                 0x00411020,
                 0x2021FFFF,
                 0x1420FFFD,
                 0xFFFFFFFF
-            };*/
+            };
             
-            InstMemory = new uint[] {
+            /*InstMemory = new uint[] {
                 0x20020005,
                 0x2003000C,
                 0x2067FFF7,
@@ -67,12 +67,10 @@ namespace mips32processor
                 0x20020001,
                 0xAC020054,
                 0xFFFFFFFF
-            };
+            };*/
 
             // 4KB
             DataMemory = new uint[1024];
-            //DataMemory[1] = 0xcc;
-            //DataMemory[4] = 0xff;
         }
 
         public uint GetRegister(string name)

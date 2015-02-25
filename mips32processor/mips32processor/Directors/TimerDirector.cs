@@ -34,7 +34,7 @@ namespace mips32processor.Directors
         {
             m_context.IncrementCycle();
             Console.WriteLine("-------------------- Cycle {0} --------------------", m_context.CurrentCycle);
-            m_component.Pulse(m_context);
+            m_component.Pulse();
             Console.WriteLine("-------------------- End Cycle --------------------\n");
             if (m_context.IsHalted)
             {
