@@ -49,7 +49,7 @@ namespace mips32processor.Mips32
 
             if ((ir >> 26) == 0x3f)
             {
-                Console.WriteLine("ID: Stall");
+                Console.WriteLine("ID: Halt");
                 return;
             }
             
@@ -70,25 +70,29 @@ namespace mips32processor.Mips32
             context.SetNodeState("exe:sa", sa);
 
             // q1 and q2.
-            uint q1 = context.GetRegister(rs.ToString());
-            uint q2 = context.GetRegister(rt.ToString());
+            uint fq1 = context.GetRegister("fq1");
+            uint fq2 = context.GetRegister("fq2");
+            uint q1 = fq1 == 0 ? context.GetRegister(rs.ToString()) : context.GetNodeState("exe:q1");
+            uint q2 = fq2 == 0 ? context.GetRegister(rt.ToString()) : context.GetNodeState("exe:q2");
+            context.SetRegister("fq1", 0);
+            context.SetRegister("fq2", 0);
             context.SetNodeState("exe:q1", q1);
             context.SetNodeState("exe:q2", q2);
 
             // Extract op and funct.
             uint op = ir >> 26;
             uint funct = ir & 0x3f;
-            Console.WriteLine("ID: inst=0x{0:x}, op={1}, funct={2}", ir, op, funct);
+            Console.WriteLine("ID: inst=0x{0:x}, op={1}, funct={2}, q1={3}, q2={4}, rs={5}, rt={6}", ir, op, funct, q1, q2, rs, rt);
 
             // Control logic.
             uint wreg = 0;
             uint m2reg = 0;
             uint wmem = 0;
-            uint jal = 0;
             uint aluc = 0;
             uint aluimm = 0;
             uint shift = 0;
             uint regdst = 0;
+            bool isBranch = false;
             switch (op)
             {
                 case 0:
@@ -175,11 +179,13 @@ namespace mips32processor.Mips32
                     break;
 
                 case 4: // beq
+                    isBranch = true;
                     if (q1 == q2)
                         context.SetNodeState("if:pc", pc + (eimm << 2));
                     break;
 
                 case 5: // bne
+                    isBranch = true;
                     if (q1 != q2)
                         context.SetNodeState("if:pc", pc + (eimm << 2));
                     break;
@@ -192,48 +198,124 @@ namespace mips32processor.Mips32
                     throw new NotSupportedException("op[" + op +"] not supported!");
             }
 
+            bool hasHazard = false;
+
             // Detect hazard.
             uint prevRegdst = context.GetNodeState("exe:regdst");
-            if (context.GetNodeState("exe:stall") == 0 && context.GetNodeState("exe:wreg") == 1 && (shift == 0 && rs == prevRegdst || aluimm == 0 && rt == prevRegdst))
-            { // Hazard with last 1th instruction, stall 3 cycle.
-                context.PassNodeState("id:pc");
-                context.PassNodeState("id:ir");
-                context.SetNodeState("if:pc", pc);
-                context.SetNodeState("id:stall", 2);
-                context.SetNodeState("if:stall", 1);
-                context.SetNodeState("exe:stall", 1);
-                Console.WriteLine("ID: Hazard with inst in EXE");
-                return;
-            }
-            prevRegdst = context.GetNodeState("mem:regdst");
-            if (context.GetNodeState("mem:stall") == 0 && context.GetNodeState("mem:wreg") == 1 && (shift == 0 && rs == prevRegdst || aluimm == 0 && rt == prevRegdst))
-            { // Hazard with last 2th instruction, stall 2 cycle.
-                context.PassNodeState("id:pc");
-                context.PassNodeState("id:ir");
-                context.SetNodeState("if:pc", pc);
-                context.SetNodeState("id:stall", 1);
-                context.SetNodeState("if:stall", 1);
-                context.SetNodeState("exe:stall", 1);
-                Console.WriteLine("ID: Hazard with inst in MEM");
-                return;
-            }
-            prevRegdst = context.GetNodeState("wb:regdst");
-            if (context.GetNodeState("wb:stall") == 0 && context.GetNodeState("wb:wreg") == 1 && (shift == 0 && rs == prevRegdst || aluimm == 0 && rt == prevRegdst))
-            { // Hazard with last 3th instruction, stall 1 cycle.
-                context.PassNodeState("id:pc");
-                context.PassNodeState("id:ir");
-                context.SetNodeState("if:pc", pc);
-                context.SetNodeState("if:stall", 1);
-                context.SetNodeState("exe:stall", 1);
-                Console.WriteLine("ID: Hazard with inst in WB");
-                return;
+            if (context.GetNodeState("exe:stall") == 0 && context.GetNodeState("exe:wreg") == 1)
+            { // Hazard with instruction in EXE.
+                if (shift == 0 && rs == prevRegdst && fq1 == 0)
+                {
+                    Console.WriteLine("ID: Hazard with inst in EXE");
+                    //hasHazard = true;
+                    context.SetRegister("q1", 1);
+                    if (isBranch)
+                    {
+                        context.PassNodeState("id:pc");
+                        context.PassNodeState("id:ir");
+                        context.SetNodeState("if:pc", pc);
+                        context.SetRegister("fq1", 1);
+                        context.SetNodeState("id:stall", 0);
+                        context.SetNodeState("if:stall", 1);
+                        context.SetNodeState("exe:stall", 1);
+                    }
+                }
+                if (aluimm == 0 && rt == prevRegdst && fq2 == 0)
+                {
+                    Console.WriteLine("ID: Hazard with inst in EXE");
+                    context.SetRegister("q2", 1);
+                    //hasHazard = true;
+                    if (isBranch)
+                    {
+                        context.PassNodeState("id:pc");
+                        context.PassNodeState("id:ir");
+                        context.SetNodeState("if:pc", pc);
+                        context.SetRegister("fq2", 1);
+                        context.SetNodeState("id:stall", 0);
+                        context.SetNodeState("if:stall", 1);
+                        context.SetNodeState("exe:stall", 1);
+                    }
+                }
             }
 
-            //context.SetNodeState("if:pc", pc);
+            prevRegdst = context.GetNodeState("mem:regdst");
+            if (!hasHazard && context.GetNodeState("mem:stall") == 0 && context.GetNodeState("mem:wreg") == 1)
+            { // Hazard with instruction in MEM, stall 2 cycle.
+                if (shift == 0 && rs == prevRegdst && fq1 == 0)
+                {
+                    Console.WriteLine("ID: Hazard with inst in MEM");
+                    context.SetRegister("q1", 2);
+                    //hasHazard = true;
+                    if (isBranch)
+                    {
+                        context.PassNodeState("id:pc");
+                        context.PassNodeState("id:ir");
+                        context.SetNodeState("if:pc", pc);
+                        context.SetRegister("fq1", 1);
+                        context.SetNodeState("id:stall", 0);
+                        context.SetNodeState("if:stall", 1);
+                        context.SetNodeState("exe:stall", 1);
+                    }
+                }
+                // Pay attention!
+                // Though aluimm != 0, 'sw' will make use of q2, so hazard is still possible.
+                // So here we must consider 'sw' alone.
+                if ((op == 43 || aluimm == 0) && rt == prevRegdst && fq2 == 0)
+                {
+                    Console.WriteLine("ID: Hazard with inst in MEM");
+                    context.SetRegister("q2", 2);
+                   // hasHazard = true;
+                    if (isBranch)
+                    {
+                        context.PassNodeState("id:pc");
+                        context.PassNodeState("id:ir");
+                        context.SetNodeState("if:pc", pc);
+                        context.SetRegister("fq2", 1);
+                        context.SetNodeState("id:stall", 0);
+                        context.SetNodeState("if:stall", 1);
+                        context.SetNodeState("exe:stall", 1);
+                    }
+                }
+            }
+
+            prevRegdst = context.GetNodeState("wb:regdst");
+            if (!hasHazard && context.GetNodeState("wb:stall") == 0 && context.GetNodeState("wb:wreg") == 1)
+            { // Hazard with instruction in WB, stall 1 cycle.
+                if (shift == 0 && rs == prevRegdst && fq1 == 0)
+                {
+                    Console.WriteLine("ID: Hazard with inst in WB");
+                    context.SetRegister("q1", 3);
+                    if (isBranch)
+                    {
+                        context.PassNodeState("id:pc");
+                        context.PassNodeState("id:ir");
+                        context.SetNodeState("if:pc", pc);
+                        context.SetRegister("fq1", 1);
+                        context.SetNodeState("id:stall", 0);
+                        context.SetNodeState("if:stall", 1);
+                        context.SetNodeState("exe:stall", 1);
+                    }
+                }
+                if (aluimm == 0 && rt == prevRegdst && fq2 == 0)
+                {
+                    Console.WriteLine("ID: Hazard with inst in WB");
+                    context.SetRegister("q2", 3);
+                    if (isBranch)
+                    {
+                        context.PassNodeState("id:pc");
+                        context.PassNodeState("id:ir");
+                        context.SetNodeState("if:pc", pc);
+                        context.SetRegister("fq2", 1);
+                        context.SetNodeState("id:stall", 0);
+                        context.SetNodeState("if:stall", 1);
+                        context.SetNodeState("exe:stall", 1);
+                    }
+                }
+            }
+            
             context.SetNodeState("exe:wreg", wreg);
             context.SetNodeState("exe:m2reg", m2reg);
             context.SetNodeState("exe:wmem", wmem);
-            context.SetNodeState("exe:jal", jal);
             context.SetNodeState("exe:aluc", aluc);
             context.SetNodeState("exe:aluimm", aluimm);
             context.SetNodeState("exe:shift", shift);

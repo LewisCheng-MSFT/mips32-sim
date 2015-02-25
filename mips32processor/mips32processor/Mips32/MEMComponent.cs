@@ -43,7 +43,7 @@ namespace mips32processor.Mips32
 
             if ((ir >> 26) == 0x3f)
             {
-                Console.WriteLine("MEM: Stall");
+                Console.WriteLine("MEM: Halt");
                 return;
             }
 
@@ -51,7 +51,8 @@ namespace mips32processor.Mips32
             context.PassNodeState("mem:wreg", "wb:wreg");
 
             // Pass M2REG.
-            context.PassNodeState("mem:m2reg", "wb:m2reg");
+            uint m2reg = context.GetNodeState("mem:m2reg");
+            context.SetNodeState("wb:m2reg", m2reg);
 
             // Pass REGDST.
             context.PassNodeState("mem:regdst", "wb:regdst");
@@ -80,6 +81,16 @@ namespace mips32processor.Mips32
             {
             }
             context.SetNodeState("wb:memout", memread);
+            if (context.GetRegister("q1") == 2)
+            {
+                context.SetRegister("q1", 0);
+                context.SetNodeState("exe:q1", m2reg == 0 ? aluout : memread);
+            }
+            if (context.GetRegister("q2") == 2)
+            {
+                context.SetRegister("q2", 0);
+                context.SetNodeState("exe:q2", m2reg == 0 ? aluout : memread);
+            }
 
             Console.WriteLine("MEM: inst=0x{0:x}, alu_out(address)=0x{1:x}, mem_read=0x{2:x}, mem_write=0x{3:x}", ir, aluout, memread, q2);
         }

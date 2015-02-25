@@ -1,5 +1,5 @@
 ﻿using System;
-namespace mips32processor
+namespace mips32processor.Directors
 {
     public interface IDirector
     {

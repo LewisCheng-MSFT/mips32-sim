@@ -37,7 +37,7 @@ namespace mips32processor.Mips32
 
             if ((ir >> 26) == 0x3f)
             {
-                Console.WriteLine("WB: Stall");
+                Console.WriteLine("WB: Halt");
                 context.IsHalted = true;
                 return;
             }
@@ -50,17 +50,24 @@ namespace mips32processor.Mips32
             if (wreg == 1)
             {
                 uint m2reg = context.GetNodeState("wb:m2reg");
+                uint regval = 0;
                 if (m2reg == 0)
-                {
-                    uint aluout = context.GetNodeState("wb:aluout");
-                    context.SetRegister(regdst.ToString(), aluout);
-                    Console.WriteLine("WB: inst=0x{0:x}, ${1}=0x{2:x}", ir, regdst, aluout);
-                }
+                    regval = context.GetNodeState("wb:aluout");
                 else
+                    regval = context.GetNodeState("wb:memout");
+
+                Console.WriteLine("WB: inst=0x{0:x}, ${1}=0x{2:x}", ir, regdst, regval);
+                context.SetRegister(regdst.ToString(), regval);
+
+                if (context.GetRegister("q1") == 3)
                 {
-                    uint memout = context.GetNodeState("wb:memout");
-                    context.SetRegister(regdst.ToString(), memout);
-                    Console.WriteLine("WB: inst=0x{0:x}, ${1}=0x{2:x}", ir, regdst, memout);
+                    context.SetRegister("q1", 0);
+                    context.SetNodeState("exe:q1", regval);
+                }
+                if (context.GetRegister("q2") == 3)
+                {
+                    context.SetRegister("q2", 0);
+                    context.SetNodeState("exe:q2", regval);
                 }
             }
             else

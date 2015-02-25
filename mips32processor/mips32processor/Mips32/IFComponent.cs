@@ -42,7 +42,7 @@ namespace mips32processor.Mips32
 
                 if ((ir >> 26) == 0x3f)
                 {
-                    Console.WriteLine("IF: Stall");
+                    Console.WriteLine("IF: Halt");
                     return;
                 }
 

@@ -31,9 +31,6 @@ namespace mips32processor.Mips32
             m_exec.Initialize(context);
             m_memc.Initialize(context);
             m_wbc.Initialize(context);
-
-            //for (int i = 0; i < 32; ++i)
-            //    context.SetRegister(i.ToString(), (uint)i);
         }
 
         public void Pulse(ProcessorContext context)

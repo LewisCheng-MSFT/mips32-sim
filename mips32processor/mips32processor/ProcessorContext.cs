@@ -31,47 +31,17 @@ namespace mips32processor
             m_currentNodeStates = new Dictionary<string, uint>();
             m_registers = new Dictionary<string, uint>();
 
-            InstMemory = new uint[] {
+            /*InstMemory = new uint[] {
                 0x2001000A,
                 0x00411020,
                 0x2021FFFF,
                 0x1420FFFD,
                 0xFFFFFFFF
-                //0x08000004
-            };
-            
-            /*InstMemory = new uint[] {
-                0x00000820,
-                0x20020004,
-                0x00001820,
-                0x8C240050,
-                0x20210004,
-                0x00641820,
-                0x2042FFFF,
-                0x1440FFFB,
-                0xAC230050,
-                0x8C240050,
-                0x00811822,
-                0x20020003,
-                0x2042FFFF,
-                0x3443FFFF,
-                0x2004FFFF,
-                0x3085FFFF,
-                0x00A43025,
-                0x00A63824,
-                0x10400001,
-                0x0800000C,
-                0x2002FFFF,
-                0x00021BC0,
-                0x00031C00,
-                0x00031C03,
-                0x00031BC2,
-                0x08000019
             };*/
-
-            /*InstMemory = new uint[] {
+            
+            InstMemory = new uint[] {
                 0x20020005,
-                0x200304C6,
+                0x2003000C,
                 0x2067FFF7,
                 0x00E22025,
                 0x00642824,
@@ -97,7 +67,7 @@ namespace mips32processor
                 0x20020001,
                 0xAC020054,
                 0xFFFFFFFF
-            };*/
+            };
 
             // 4KB
             DataMemory = new uint[1024];

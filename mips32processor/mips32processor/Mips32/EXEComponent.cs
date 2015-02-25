@@ -43,7 +43,7 @@ namespace mips32processor.Mips32
 
             if ((ir >> 26) == 0x3f)
             {
-                Console.WriteLine("EXE: Stall");
+                Console.WriteLine("EXE: Halt");
                 return;
             }
 
@@ -62,24 +62,34 @@ namespace mips32processor.Mips32
             // Pass Q2.
             context.PassNodeState("exe:q2", "mem:q2");
 
+            // m2reg in WB.
+            uint m2reg = context.GetNodeState("wb:m2reg");
+
             // Alu a.
             uint shift = context.GetNodeState("exe:shift");
-            uint alua;
-            if (shift == 0)
-                alua = context.GetNodeState("exe:q1");
-            else // Shift amount.
-                alua = 0;
+            uint alua = 0;
+            switch (shift)
+            {
+                case 0:
+                    alua = context.GetNodeState("exe:q1");
+                    break;
+                case 1:
+                    alua = context.GetNodeState("exe:sa");
+                    break;
+            }
 
             // Alu b.
             uint aluimm = context.GetNodeState("exe:aluimm");
-            uint alub;
-            if (aluimm == 0)
-                alub = context.GetNodeState("exe:q2");
-            else
-                alub = context.GetNodeState("exe:imm");
-
-            // sa.
-            int sa = (int)context.GetNodeState("exe:sa");
+            uint alub = 0;
+            switch (aluimm)
+            {
+                case 0:
+                    alub = context.GetNodeState("exe:q2");
+                    break;
+                case 1:
+                    alub = context.GetNodeState("exe:imm");
+                    break;
+            }
 
             // Alu control.
             uint aluout = 0;
@@ -102,15 +112,15 @@ namespace mips32processor.Mips32
                     aluout = alua | alub;
                     break;
                 case AluControl.AlucShiftLeftLogic:
-                    aluout = alub << sa;
+                    aluout = alub << (int)alua;
                     break;
                 case AluControl.AlucShiftRightLogic:
-                    aluout = alub >> sa;
+                    aluout = alub >> (int)alua;
                     break;
                 case AluControl.AlucShiftRightArithmetic:
                     // Pay attention to arithmetic shift-right.
                     int quotient = (int)alub;
-                    while (sa-- > 0)
+                    while (alua-- > 0)
                         quotient /= 2;
                     aluout = (uint)quotient;
                     break;
@@ -119,8 +129,18 @@ namespace mips32processor.Mips32
             }
 
             context.SetNodeState("mem:aluout", aluout);
+            if (context.GetRegister("q1") == 1)
+            {
+                context.SetRegister("q1", 0);
+                context.SetNodeState("exe:q1", aluout);
+            }
+            if (context.GetRegister("q2") == 1)
+            {
+                context.SetRegister("q2", 0);
+                context.SetNodeState("exe:q2", aluout);
+            }
 
-            Console.WriteLine("EXE: inst=0x{0:x}, aluc={1}, alu_a={2}, alu_b={3}, alu_out={4}", ir, aluc, alua, alub, aluout);
+            Console.WriteLine("EXE: inst=0x{0:x}, aluc={1}, alu_a=0x{2:x}, alu_b=0x{3:x}, alu_out=0x{4:x}", ir, aluc, alua, alub, aluout);
         }
     }
 }

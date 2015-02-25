@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace mips32processor
+namespace mips32processor.Directors
 {
-    public class TimerDirector : mips32processor.IDirector
+    public class TimerDirector : IDirector
     {
         private System.Timers.Timer m_timer;
         private Semaphore m_semStop;
